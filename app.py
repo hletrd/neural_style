@@ -9,12 +9,12 @@ import threading
 import imghdr
 import math
 
-dbclient = MongoClient('localhost', 27017)
+dbclient = MongoClient('127.0.0.1', 27017)
 db = dbclient.db_neural
 col = db.images
 
 app = Flask(__name__)
-app.config['UPLOAD_FOLDER'] = '/home/hletrd/neural-run/files/'
+app.config['UPLOAD_FOLDER'] = '/home/hletrd/shared/files/'
 appdir = '/home/hletrd/neural-run'
 app.config['MAX_CONTENT_LENGTH'] = 8 * 1024 * 1024
 processing = False
@@ -35,7 +35,7 @@ class t_run(threading.Thread):
 
 	def run(self):
 		os.chdir('/home/hletrd/neural-style/')
-		self.p = subprocess.call(["th", "neural_style.lua", "-style_image", appdir + "/files/" + self.url + "_style.jpg", "-content_image", appdir + "/files/" + self.url + "_content.jpg", "-gpu", "-1", "-output_image", appdir + "/files/" + self.url + "_out.png", "-image_size", "384", "-optimizer", "lbfgs", "-content_weight", self.cweight, "-style_weight", self.sweight, "-tv_weight", self.tweight, "-learning_rate", self.lrate, "-num_iterations", self.ni])
+		self.p = subprocess.call(["th", "neural_style.lua", "-style_image", app.config['UPLOAD_FOLDER'] + self.url + "_style.jpg", "-content_image", app.config['UPLOAD_FOLDER'] + self.url + "_content.jpg", "-gpu", "-1", "-output_image", app.config['UPLOAD_FOLDER'] + self.url + "_out.png", "-image_size", "384", "-optimizer", "lbfgs", "-content_weight", self.cweight, "-style_weight", self.sweight, "-tv_weight", self.tweight, "-learning_rate", self.lrate, "-num_iterations", self.ni])
 		global processing
 		processing = False
 
@@ -72,10 +72,14 @@ def index():
 	<label>Please do not upload too many files, and do not upload explicit photos.</label>
 	<br />
 	<a href="/list">List of uploaded files</a>
-	<br />
-	<a href="//neural.0101010101.com">Primary server</a>
-	<br />
-	<a href="//neural2.0101010101.com">Secondary server (much slower)</a>
+	<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-36880204-4', 'auto');
+  ga('send', 'pageview');
+	</script>
 </body>
 </html>"""
 
@@ -92,7 +96,7 @@ def submit():
 		ni = 1000
 	elif ni < 1:
 		ni = 1
-	if style and content and (style.filename.rsplit('.', 1)[1] == 'jpg' or style.filename.rsplit('.', 1)[1] == 'jpeg') and (content.filename.rsplit('.', 1)[1] == 'jpg' or content.filename.rsplit('.', 1)[1] == 'jpeg'):
+	if style and content:
 		url = ''.join(random.choice(string.ascii_lowercase + string.digits) for _ in range(8))
 		style.save(os.path.join(app.config['UPLOAD_FOLDER'], url + '_style.jpg'))
 		content.save(os.path.join(app.config['UPLOAD_FOLDER'], url + '_content.jpg'))
@@ -121,7 +125,7 @@ def list(page=1):
 	result = ''
 	unprocessed_list = col.find({"status": False})
 	for i in unprocessed_list:
-		if os.path.isfile(appdir + '/files/' + i['url'] + '_out.png'):
+		if os.path.isfile(app.config['UPLOAD_FOLDER'] + i['url'] + '_out.png'):
 			col.update({"url": i['url']}, {"$set": {"status": True}}, upsert=False)
 	for i in col.find().sort("uploaded", -1).skip((page - 1) * 10).limit(10):
 		if i['status']:
@@ -148,7 +152,14 @@ def list(page=1):
 		<meta charset="utf-8">
 		<title>List</title>
 	</head>
-	<body>""" + result + '<hr><span style="font-size: 1.2em">' + pagelist + '</span><hr><a href="/">Back</a></body></html>'
+	<body>""" + result + '<hr><span style="font-size: 1.2em">' + pagelist + '</span><hr><a href="/">Back</a>' + """<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-36880204-4', 'auto');
+  ga('send', 'pageview');
+	</script>""" + '</body></html>'
 
 @app.route('/image/<url>')
 def image(url):
@@ -166,6 +177,14 @@ def image(url):
 	<img alt="" src="/files/""" + url + """_out.png" width="512">
 	<hr>
 	<a href="/list">Back</a>
+	<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-36880204-4', 'auto');
+  ga('send', 'pageview');
+	</script>
 	</body>
 	</html>"""
 
@@ -187,4 +206,4 @@ def timer():
 threading.Timer(3.0, timer).start()
 
 if __name__ == '__main__':
-	app.run(debug=True, port=9002, use_reloader=False)
+	app.run(debug=True, host="0.0.0.0", port=9002, use_reloader=False)
