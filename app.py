@@ -7,6 +7,7 @@ import os
 import subprocess
 import threading
 import imghdr
+import math
 
 dbclient = MongoClient('localhost', 27017)
 db = dbclient.db_neural
@@ -34,8 +35,7 @@ class t_run(threading.Thread):
 
 	def run(self):
 		os.chdir('/home/hletrd/neural-style/')
-		self.p = subprocess.call(["th", "neural_style.lua", "-style_image", appdir + "/files/" + self.url + "_style.jpg", "-content_image", appdir + "/files/" + self.url + "_content.jpg", "-gpu", "-1", "-output_image", appdir + "/files/" + self.url + "_out.png", "-image_size", "256", "-optimizer", "adam", "-content_weight", self.cweight, "-style_weight", self.sweight, "-tv_weight", self.tweight, "-learning_rate", self.lrate, "-num_iterations", self.ni])
-		print "th neural_style.lua -style_image " + appdir + "/files/" + self.url + "_style.jpg -content_image " + appdir + "/files/" + self.url + "_content.jpg -gpu -1 -output_image " + appdir + "/files/" + self.url + "_out.png -image_size 128 -optimizer adam -content_weight " + self.cweight + " -style_weight "+ self.sweight + " -tv_weight " + self.tweight + " -learning_rate " + self.lrate
+		self.p = subprocess.call(["th", "neural_style.lua", "-style_image", appdir + "/files/" + self.url + "_style.jpg", "-content_image", appdir + "/files/" + self.url + "_content.jpg", "-gpu", "-1", "-output_image", appdir + "/files/" + self.url + "_out.png", "-image_size", "384", "-optimizer", "lbfgs", "-content_weight", self.cweight, "-style_weight", self.sweight, "-tv_weight", self.tweight, "-learning_rate", self.lrate, "-num_iterations", self.ni])
 		global processing
 		processing = False
 
@@ -46,7 +46,7 @@ def index():
 <html>
 <head>
 	<meta charset="utf-8">
-	<title>Neural Style</title>
+	<title>Neural Style Online</title>
 </head>
 <body>
 	<h3>Web-based neural image styling by HLETRD</h3>
@@ -60,7 +60,7 @@ def index():
 	<div><label>Select content image: </label><input name="content" type="file"></div>
 	<hr>
 	<h4>Set optional parameters</h4>
-	<div><label>Input number of iterations(min: 1, max: 1000): </label><input name="ni" type="text" value="1000"></div>
+	<div><label>Input number of iterations(min: 1, max: 1000): </label><input name="ni" type="text" value="250"></div>
 	<div><label>Input content weight(How much to weight the content reconstruction term.): </label><input name="cweight" type="text" value="5"></div>
 	<div><label>Input style weight(How much to weight the style reconstruction term.): </label><input name="sweight" type="text" value="100"></div>
 	<div><label>Input tv weight(Weight of total-variation (TV) regularization; this helps to smooth the image.): </label><input name="tweight" type="text" value="0.001"></div>
@@ -69,9 +69,13 @@ def index():
 	<input type="submit">
 	</form>
 	<br />
-	<label>Please do not upload too many files.</label>
+	<label>Please do not upload too many files, and do not upload explicit photos.</label>
 	<br />
 	<a href="/list">List of uploaded files</a>
+	<br />
+	<a href="//neural.0101010101.com">Primary server</a>
+	<br />
+	<a href="//neural2.0101010101.com">Secondary server (much slower)</a>
 </body>
 </html>"""
 
@@ -100,14 +104,26 @@ def submit():
 	else:
 		return '<!doctype HTML><html><head><title>Error</title></head><body>error: please check filetype or filesize.</body></html>'
 
+@app.route('/delete//<url>')
+def delete(url):
+	try:
+		os.remove(app.config['UPLOAD_FOLDER'] + url + '_style.jpg')
+		os.remove(app.config['UPLOAD_FOLDER'] + url + '_content.jpg')
+		os.remove(app.config['UPLOAD_FOLDER'] + url + '_out.png')
+	except:
+		print 'err'
+	col.remove({"url": url})
+	return redirect('/list')
+
 @app.route('/list')
-def list():
+@app.route('/list/<int:page>')
+def list(page=1):
 	result = ''
 	unprocessed_list = col.find({"status": False})
 	for i in unprocessed_list:
 		if os.path.isfile(appdir + '/files/' + i['url'] + '_out.png'):
 			col.update({"url": i['url']}, {"$set": {"status": True}}, upsert=False)
-	for i in col.find():
+	for i in col.find().sort("uploaded", -1).skip((page - 1) * 10).limit(10):
 		if i['status']:
 			result = result + '<div><a href="/image/' + i['url'] + '">' + i['url'] + '</a>: Processing completed, uploaded at ' + i['uploaded'] + ' GMT, <br /><img alt="" src="/files/' + i['url'] + '_out.png" width="250"></div>'
 		else:
@@ -115,13 +131,24 @@ def list():
 				result = result + '<div><a href="/image/' + i['url'] + '">' + i['url'] + '</a>: Queued now... uploaded at ' + i['uploaded'] + ' GMT</div>'
 			else:
 				result = result + '<div><a href="/image/' + i['url'] + '">' + i['url'] + '</a>: Processing now... uploaded at ' + i['uploaded'] + ' GMT, processing started at ' + i['pstarted'] + ' GMT</div>'
+	lastpage = math.ceil(1.0 * col.count() / 10)
+	pagelist = ''
+	if page > 2:
+		pagelist += '<a href="/list/' + str(page - 2) + '">' + str(page - 2) + '</a> '
+	if page > 1:
+		pagelist += '<a href="/list/' + str(page - 1) + '">' + str(page - 1) + '</a> '
+	pagelist += str(page) + ' '
+	if lastpage >= page+1:
+		pagelist += '<a href="/list/' + str(page + 1) + '">' + str(page + 1) + '</a> '
+	if lastpage >= page+2:
+		pagelist += '<a href="/list/' + str(page + 2) + '">' + str(page + 2) + '</a> '
 	return """<!doctype HTML>
 	<html>
 	<head>
 		<meta charset="utf-8">
 		<title>List</title>
 	</head>
-	<body>""" + result + '<br /><a href="/">Back</a></body></html>'
+	<body>""" + result + '<hr><span style="font-size: 1.2em">' + pagelist + '</span><hr><a href="/">Back</a></body></html>'
 
 @app.route('/image/<url>')
 def image(url):
@@ -137,6 +164,7 @@ def image(url):
 	<img alt="" src="/files/""" + url + """_content.jpg" width="512">
 	<div>result</div>
 	<img alt="" src="/files/""" + url + """_out.png" width="512">
+	<hr>
 	<a href="/list">Back</a>
 	</body>
 	</html>"""
@@ -149,7 +177,7 @@ def timer():
 	threading.Timer(3.0, timer).start()
 	global processing
 	if processing == False:
-		a = col.find_one({"queued": True})
+		a = col.find({"queued": True}).sort("uploaded", 1).limit(1).next()
 		if a:
 			global t
 			t = t_run(a['url'], a['cweight'], a['sweight'], a['tweight'], a['lrate'], a['ni'])
