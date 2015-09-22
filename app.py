@@ -173,36 +173,43 @@ def list(page=1):
 
 @app.route('/image/<url>')
 def image(url):
-	return """<!doctype HTML>
-	<head>
-		<meta charset="utf-8">
-		<title>Image</title>
-		<link rel="stylesheet" href="/files/normalize.css">
-		<link rel="stylesheet" href="/files/skeleton.css">
-	</head>
-	<body>
-	<div class="container">
-	<h4>style</h4>
-	<img alt="" src="/files/""" + url + """_style.jpg" width="512">
-	<hr>
-	<h4>content</h4>
-	<img alt="" src="/files/""" + url + """_content.jpg" width="512">
-	<hr>
-	<h4>result</h4>
-	<img alt="" src="/files/""" + url + """_out.png" width="512">
-	<hr>
-	<a class="button-primary" href="#" onclick="history.go(-1)">Back</a>
-	<script>
-  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
-  ga('create', 'UA-36880204-4', 'auto');
-  ga('send', 'pageview');
-	</script>
-	</div>
-	</body>
-	</html>"""
+	an_image = col.find_one({"url": url})
+	if an_image:
+		result = """<!doctype HTML>
+		<head>
+			<meta charset="utf-8">
+			<title>Image</title>
+			<link rel="stylesheet" href="/files/normalize.css">
+			<link rel="stylesheet" href="/files/skeleton.css">
+		</head>
+		<body>
+		<div class="container">
+		<h4>style</h4>
+		<img alt="" src="/files/""" + url + """_style.jpg" width="512">
+		<hr>
+		<h4>content</h4>
+		<img alt="" src="/files/""" + url + """_content.jpg" width="512">
+		<hr>
+		<h4>result</h4>
+		<img alt="" src="/files/""" + url + """_out.png" width="512">
+		<hr>"""
+		if 'ni' in an_image:
+			result += "<h5>Number of iterations: " + an_image['ni'] + "</h5><h5>Content weight: " + an_image['cweight'] + "</h5><h5>Style weight: " + an_image['sweight'] + "</h5><h5>Tv weight: " + an_image['tweight'] + "</h5><h5>Learning rate: " + an_image['lrate'] + "</h5><hr>"
+		result += """<a class="button-primary" href="#" onclick="history.go(-1)">Back</a>
+		<script>
+	  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+	  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+	  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+	  ga('create', 'UA-36880204-4', 'auto');
+	  ga('send', 'pageview');
+		</script>
+		</div>
+		</body>
+		</html>"""
+	else:
+		result = "error"
+	return result
 
 @app.route('/files/<path:path>')
 def staticfile(path):
