@@ -37,7 +37,7 @@ class t_run(threading.Thread):
 
 	def run(self):
 		os.chdir('/home/hletrd/neural-style/')
-		self.p = subprocess.call(["th", "neural_style.lua", "-style_image", app.config['UPLOAD_FOLDER'] + self.url + "_style.jpg", "-content_image", app.config['UPLOAD_FOLDER'] + self.url + "_content.jpg", "-gpu", gpu, "-output_image", app.config['UPLOAD_FOLDER'] + self.url + "_out.png", "-image_size", "384", "-optimizer", "lbfgs", "-content_weight", self.cweight, "-style_weight", self.sweight, "-tv_weight", self.tweight, "-learning_rate", self.lrate, "-num_iterations", self.ni])
+		self.p = subprocess.call(["th", "neural_style.lua", "-style_image", app.config['UPLOAD_FOLDER'] + self.url + "_style.jpg", "-content_image", app.config['UPLOAD_FOLDER'] + self.url + "_content.jpg", "-gpu", gpu, "-output_image", app.config['UPLOAD_FOLDER'] + self.url + "_out.png", "-image_size", "384", "-optimizer", "lbfgs", "-content_weight", self.cweight, "-style_weight", self.sweight, "-tv_weight", self.tweight, "-num_iterations", self.ni])
 		global processing
 		processing = False
 
@@ -51,24 +51,28 @@ def index():
 	<title>Neural Style Online</title>
 	<link rel="stylesheet" href="/files/normalize.css">
 	<link rel="stylesheet" href="/files/skeleton.css">
+	<style type="text/css">
+	.u-full-width {
+		height: 30px !important;
+	}
+	</style>
 </head>
 <body>
 	<div class="container">
-	<h3>Web-based neural image styling by HLETRD</h3>
-	<p>This service is based on <a href="https://github.com/jcjohnson/neural-style/">Torch implementation of neural style algorithm</a> by jcjohnson.</p>
+	<h4>Web-based neural image styling by HLETRD</h4>
 	<form method="POST" action="/submit" enctype="multipart/form-data">
+	<p>This service is based on <a href="https://github.com/jcjohnson/neural-style/">Torch implementation of neural style algorithm</a> by jcjohnson.</p>
 	<p>Only jpg files are allowed. Maximum allowed size is 8MB totally.</p>
 	<hr>
-	<h4>Select images</h4>
+	<h5>Select images</h5>
 	<div class="row"><p class="six columns">Select style image</p><input class="six columns" name="style" type="file"></div>
 	<div class="row"><p class="six columns">Select content image</p><input class="six columns" name="content" type="file"></div>
-	<hr>
-	<h4>Set optional parameters</h4>
+	<h5>Set optional parameters</h5>
 	<div class="row"><p class="eight columns">Input number of iterations(min: 1, max: 1000): </p><input class="u-full-width four columns" name="ni" type="text" value="300"></div>
 	<div class="row"><p class="eight columns">Input content weight(How much to weight the content reconstruction term.)</p><input class="u-full-width four columns" name="cweight" type="text" value="5"></div>
 	<div class="row"><p class="eight columns">Input style weight(How much to weight the style reconstruction term.)</p><input class="u-full-width four columns" name="sweight" type="text" value="100"></div>
 	<div class="row"><p class="eight columns">Input tv weight(Weight of total-variation (TV) regularization; this helps to smooth the image.)</p><input class="u-full-width four columns" name="tweight" type="text" value="0.001"></div>
-	<div class="row"><p class="eight columns">Input learning rate(Learning rate to use with the ADAM optimizer.)</p><input class="u-full-width four columns" name="lrate" type="text" value="1"></div>
+	<!--<div class="row"><p class="eight columns">Input learning rate(Learning rate to use with the ADAM optimizer.)</p><input class="u-full-width four columns" name="lrate" type="text" value="1"></div>-->
 	<hr>
 	<input class="button-primary" type="submit" value="Submit images">
 	</form>
@@ -77,6 +81,7 @@ def index():
 		<li>Please do not upload too many files.</li>
 		<li>Please do not upload explicit photos.</li>
 		<li>If your result is hard to recognize, try increasing number of iterations.</li>
+		<li><a href="https://github.com/hletrd/neural_style">This project on GitHub</a></li>
 	</ul>
 	<a href="/list">List of uploaded files</a>
 	<script>
@@ -98,7 +103,7 @@ def submit():
 	cweight = float(request.form['cweight'])
 	sweight = float(request.form['sweight'])
 	tweight = float(request.form['tweight'])
-	lrate = float(request.form['lrate'])
+	#lrate = float(request.form['lrate'])
 	ni = int(request.form['ni'])
 	if ni > 1000:
 		ni = 1000
@@ -194,7 +199,7 @@ def image(url):
 		<img alt="" src="/files/""" + url + """_out.png" width="512">
 		<hr>"""
 		if 'ni' in an_image:
-			result += "<h5>Number of iterations: " + an_image['ni'] + "</h5><h5>Content weight: " + an_image['cweight'] + "</h5><h5>Style weight: " + an_image['sweight'] + "</h5><h5>Tv weight: " + an_image['tweight'] + "</h5><h5>Learning rate: " + an_image['lrate'] + "</h5><hr>"
+			result += "<h5>Number of iterations: " + an_image['ni'] + "</h5><h5>Content weight: " + an_image['cweight'] + "</h5><h5>Style weight: " + an_image['sweight'] + "</h5><h5>Tv weight: " + an_image['tweight'] + "</h5><hr>"
 		result += """<a class="button-primary" href="#" onclick="history.go(-1)">Back</a>
 		<script>
 	  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
