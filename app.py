@@ -8,14 +8,16 @@ import subprocess
 import threading
 import imghdr
 import math
+import config
 
 dbclient = MongoClient('127.0.0.1', 27017)
 db = dbclient.db_neural
 col = db.images
 
 app = Flask(__name__)
-app.config['UPLOAD_FOLDER'] = '/home/hletrd/shared/files/'
-appdir = '/home/hletrd/neural-run'
+app.config['UPLOAD_FOLDER'] = '/home/hletrd/neural-run/files/'
+
+gpu = "-1"
 app.config['MAX_CONTENT_LENGTH'] = 8 * 1024 * 1024
 processing = False
 t = False
@@ -35,7 +37,7 @@ class t_run(threading.Thread):
 
 	def run(self):
 		os.chdir('/home/hletrd/neural-style/')
-		self.p = subprocess.call(["th", "neural_style.lua", "-style_image", app.config['UPLOAD_FOLDER'] + self.url + "_style.jpg", "-content_image", app.config['UPLOAD_FOLDER'] + self.url + "_content.jpg", "-gpu", "-1", "-output_image", app.config['UPLOAD_FOLDER'] + self.url + "_out.png", "-image_size", "384", "-optimizer", "lbfgs", "-content_weight", self.cweight, "-style_weight", self.sweight, "-tv_weight", self.tweight, "-learning_rate", self.lrate, "-num_iterations", self.ni])
+		self.p = subprocess.call(["th", "neural_style.lua", "-style_image", app.config['UPLOAD_FOLDER'] + self.url + "_style.jpg", "-content_image", app.config['UPLOAD_FOLDER'] + self.url + "_content.jpg", "-gpu", gpu, "-output_image", app.config['UPLOAD_FOLDER'] + self.url + "_out.png", "-image_size", "384", "-optimizer", "lbfgs", "-content_weight", self.cweight, "-style_weight", self.sweight, "-tv_weight", self.tweight, "-learning_rate", self.lrate, "-num_iterations", self.ni])
 		global processing
 		processing = False
 
@@ -58,6 +60,7 @@ def index():
 	<h4>Select images</h4>
 	<div><label>Select style image: </label><input name="style" type="file"></div>
 	<div><label>Select content image: </label><input name="content" type="file"></div>
+	<div><input type="checkbox">
 	<hr>
 	<h4>Set optional parameters</h4>
 	<div><label>Input number of iterations(min: 1, max: 1000): </label><input name="ni" type="text" value="250"></div>
@@ -108,7 +111,7 @@ def submit():
 	else:
 		return '<!doctype HTML><html><head><title>Error</title></head><body>error: please check filetype or filesize.</body></html>'
 
-@app.route('/delete//<url>')
+@app.route('/delete/' + config.password + '/<url>')
 def delete(url):
 	try:
 		os.remove(app.config['UPLOAD_FOLDER'] + url + '_style.jpg')
@@ -176,7 +179,7 @@ def image(url):
 	<div>result</div>
 	<img alt="" src="/files/""" + url + """_out.png" width="512">
 	<hr>
-	<a href="/list">Back</a>
+	<a href="#" onclick="history.go(-1)">Back</a>
 	<script>
   (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
   (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
