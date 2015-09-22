@@ -24,7 +24,7 @@ t = False
 col.update_many({"queued": False, "status": False}, {"$set": {"queued": True}})
 
 class t_run(threading.Thread):
-	def __init__(self, url, cweight, sweight, tweight, lrate, ni):
+	def __init__(self, url, cweight, sweight, tweight, ni):
 		threading.Thread.__init__(self)
 		global processing
 		processing = True
@@ -32,7 +32,6 @@ class t_run(threading.Thread):
 		self.cweight = str(cweight)
 		self.sweight = str(sweight)
 		self.tweight = str(tweight)
-		self.lrate = str(lrate)
 		self.ni = str(ni)
 
 	def run(self):
@@ -67,16 +66,16 @@ def index():
 	<h5>Select images</h5>
 	<div class="row"><p class="six columns">Select style image</p><input class="six columns" name="style" type="file"></div>
 	<div class="row"><p class="six columns">Select content image</p><input class="six columns" name="content" type="file"></div>
+	<br />
 	<h5>Set optional parameters</h5>
 	<div class="row"><p class="eight columns">Input number of iterations(min: 1, max: 1000): </p><input class="u-full-width four columns" name="ni" type="text" value="300"></div>
 	<div class="row"><p class="eight columns">Input content weight(How much to weight the content reconstruction term.)</p><input class="u-full-width four columns" name="cweight" type="text" value="5"></div>
 	<div class="row"><p class="eight columns">Input style weight(How much to weight the style reconstruction term.)</p><input class="u-full-width four columns" name="sweight" type="text" value="100"></div>
 	<div class="row"><p class="eight columns">Input tv weight(Weight of total-variation (TV) regularization; this helps to smooth the image.)</p><input class="u-full-width four columns" name="tweight" type="text" value="0.001"></div>
 	<!--<div class="row"><p class="eight columns">Input learning rate(Learning rate to use with the ADAM optimizer.)</p><input class="u-full-width four columns" name="lrate" type="text" value="1"></div>-->
-	<hr>
 	<input class="button-primary" type="submit" value="Submit images">
 	</form>
-	<div style="height: 20px"></div>
+	<hr>
 	<ul>
 		<li>Please do not upload too many files.</li>
 		<li>Please do not upload explicit photos.</li>
@@ -114,7 +113,7 @@ def submit():
 		style.save(os.path.join(app.config['UPLOAD_FOLDER'], url + '_style.jpg'))
 		content.save(os.path.join(app.config['UPLOAD_FOLDER'], url + '_content.jpg'))
 		if imghdr.what(os.path.join(app.config['UPLOAD_FOLDER'], url + '_style.jpg')) == 'jpeg' and imghdr.what(os.path.join(app.config['UPLOAD_FOLDER'], url + '_content.jpg')) == 'jpeg':
-			col.insert_one({"url": url, "status": False, "uploaded": strftime("%Y-%m-%d %H:%M:%S", gmtime()), "queued": True, "cweight": cweight, "sweight": sweight, "tweight": tweight, "lrate": lrate, "ni": ni})
+			col.insert_one({"url": url, "status": False, "uploaded": strftime("%Y-%m-%d %H:%M:%S", gmtime()), "queued": True, "cweight": cweight, "sweight": sweight, "tweight": tweight, "ni": ni})
 			return redirect('/list')
 		else:
 			return '<!doctype HTML><html><head><title>Error</title></head><body>error: not a valid JPEG file.</body></html>'
@@ -150,6 +149,12 @@ def list(page=1):
 				result = result + '<div><a href="/image/' + i['url'] + '">' + i['url'] + '</a>: Processing now... uploaded at ' + i['uploaded'] + ' GMT, processing started at ' + i['pstarted'] + ' GMT</div>'
 	lastpage = math.ceil(1.0 * col.count() / 10)
 	pagelist = ''
+	if page > 5:
+		pagelist += '<a href="/list/' + str(page - 5) + '">' + str(page - 5) + '</a> '
+	if page > 4:
+		pagelist += '<a href="/list/' + str(page - 4) + '">' + str(page - 4) + '</a> '
+	if page > 3:
+		pagelist += '<a href="/list/' + str(page - 3) + '">' + str(page - 3) + '</a> '
 	if page > 2:
 		pagelist += '<a href="/list/' + str(page - 2) + '">' + str(page - 2) + '</a> '
 	if page > 1:
@@ -159,6 +164,12 @@ def list(page=1):
 		pagelist += '<a href="/list/' + str(page + 1) + '">' + str(page + 1) + '</a> '
 	if lastpage >= page+2:
 		pagelist += '<a href="/list/' + str(page + 2) + '">' + str(page + 2) + '</a> '
+	if lastpage >= page+3:
+		pagelist += '<a href="/list/' + str(page + 3) + '">' + str(page + 3) + '</a> '
+	if lastpage >= page+4:
+		pagelist += '<a href="/list/' + str(page + 4) + '">' + str(page + 4) + '</a> '
+	if lastpage >= page+5:
+		pagelist += '<a href="/list/' + str(page + 5) + '">' + str(page + 5) + '</a> '
 	return """<!doctype HTML>
 	<html>
 	<head>
@@ -199,7 +210,7 @@ def image(url):
 		<img alt="" src="/files/""" + url + """_out.png" width="512">
 		<hr>"""
 		if 'ni' in an_image:
-			result += "<h5>Number of iterations: " + an_image['ni'] + "</h5><h5>Content weight: " + an_image['cweight'] + "</h5><h5>Style weight: " + an_image['sweight'] + "</h5><h5>Tv weight: " + an_image['tweight'] + "</h5><hr>"
+			result += "<h5>Number of iterations: " + str(an_image['ni']) + "</h5><h5>Content weight: " + str(an_image['cweight']) + "</h5><h5>Style weight: " + str(an_image['sweight']) + "</h5><h5>Tv weight: " + str(an_image['tweight']) + "</h5><hr>"
 		result += """<a class="button-primary" href="#" onclick="history.go(-1)">Back</a>
 		<script>
 	  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
@@ -228,7 +239,7 @@ def timer():
 			a = col.find({"queued": True}).sort("uploaded", 1).limit(1).next()
 			if a:
 				global t
-				t = t_run(a['url'], a['cweight'], a['sweight'], a['tweight'], a['lrate'], a['ni'])
+				t = t_run(a['url'], a['cweight'], a['sweight'], a['tweight'], a['ni'])
 				t.start()
 				col.update({"url": a['url']}, {"$set": {"queued": False, "pstarted": strftime("%Y-%m-%d %H:%M:%S", gmtime())}}, upsert=False)
 		except:
