@@ -49,31 +49,35 @@ def index():
 <head>
 	<meta charset="utf-8">
 	<title>Neural Style Online</title>
+	<link rel="stylesheet" href="/files/normalize.css">
+	<link rel="stylesheet" href="/files/skeleton.css">
 </head>
 <body>
+	<div class="container">
 	<h3>Web-based neural image styling by HLETRD</h3>
-	<label>This service is based on <a href="https://github.com/jcjohnson/neural-style/">Torch implementation of neural style algorithm</a> by jcjohnson.</label>
+	<p>This service is based on <a href="https://github.com/jcjohnson/neural-style/">Torch implementation of neural style algorithm</a> by jcjohnson.</p>
 	<form method="POST" action="/submit" enctype="multipart/form-data">
-	<br />
-	<div><label>Only jpg files are allowed. Maximum allowed size is 8MB totally.</label></div>
+	<p>Only jpg files are allowed. Maximum allowed size is 8MB totally.</p>
 	<hr>
 	<h4>Select images</h4>
-	<div><label>Select style image: </label><input name="style" type="file"></div>
-	<div><label>Select content image: </label><input name="content" type="file"></div>
-	<div><input type="checkbox">
+	<div class="row"><p class="six columns">Select style image</p><input class="six columns" name="style" type="file"></div>
+	<div class="row"><p class="six columns">Select content image</p><input class="six columns" name="content" type="file"></div>
 	<hr>
 	<h4>Set optional parameters</h4>
-	<div><label>Input number of iterations(min: 1, max: 1000): </label><input name="ni" type="text" value="250"></div>
-	<div><label>Input content weight(How much to weight the content reconstruction term.): </label><input name="cweight" type="text" value="5"></div>
-	<div><label>Input style weight(How much to weight the style reconstruction term.): </label><input name="sweight" type="text" value="100"></div>
-	<div><label>Input tv weight(Weight of total-variation (TV) regularization; this helps to smooth the image.): </label><input name="tweight" type="text" value="0.001"></div>
-	<div><label>Input learning rate(Learning rate to use with the ADAM optimizer.): </label><input name="lrate" type="text" value="1"></div>
+	<div class="row"><p class="eight columns">Input number of iterations(min: 1, max: 1000): </p><input class="u-full-width four columns" name="ni" type="text" value="300"></div>
+	<div class="row"><p class="eight columns">Input content weight(How much to weight the content reconstruction term.)</p><input class="u-full-width four columns" name="cweight" type="text" value="5"></div>
+	<div class="row"><p class="eight columns">Input style weight(How much to weight the style reconstruction term.)</p><input class="u-full-width four columns" name="sweight" type="text" value="100"></div>
+	<div class="row"><p class="eight columns">Input tv weight(Weight of total-variation (TV) regularization; this helps to smooth the image.)</p><input class="u-full-width four columns" name="tweight" type="text" value="0.001"></div>
+	<div class="row"><p class="eight columns">Input learning rate(Learning rate to use with the ADAM optimizer.)</p><input class="u-full-width four columns" name="lrate" type="text" value="1"></div>
 	<hr>
-	<input type="submit">
+	<input class="button-primary" type="submit" value="Submit images">
 	</form>
-	<br />
-	<label>Please do not upload too many files, and do not upload explicit photos.</label>
-	<br />
+	<div style="height: 20px"></div>
+	<ul>
+		<li>Please do not upload too many files.</li>
+		<li>Please do not upload explicit photos.</li>
+		<li>If your result is hard to recognize, try increasing number of iterations.</li>
+	</ul>
 	<a href="/list">List of uploaded files</a>
 	<script>
   (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
@@ -83,6 +87,7 @@ def index():
   ga('create', 'UA-36880204-4', 'auto');
   ga('send', 'pageview');
 	</script>
+	</div>
 </body>
 </html>"""
 
@@ -154,15 +159,17 @@ def list(page=1):
 	<head>
 		<meta charset="utf-8">
 		<title>List</title>
+		<link rel="stylesheet" href="/files/normalize.css">
+		<link rel="stylesheet" href="/files/skeleton.css">
 	</head>
-	<body>""" + result + '<hr><span style="font-size: 1.2em">' + pagelist + '</span><hr><a href="/">Back</a>' + """<script>
+	<body><div class="container">""" + result + '<hr><span style="font-size: 1.2em">' + pagelist + '</span><hr><a href="/">Back</a>' + """<script>
   (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
   (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
   m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
   })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
   ga('create', 'UA-36880204-4', 'auto');
   ga('send', 'pageview');
-	</script>""" + '</body></html>'
+	</script>""" + '</div></body></html>'
 
 @app.route('/image/<url>')
 def image(url):
@@ -170,16 +177,21 @@ def image(url):
 	<head>
 		<meta charset="utf-8">
 		<title>Image</title>
+		<link rel="stylesheet" href="/files/normalize.css">
+		<link rel="stylesheet" href="/files/skeleton.css">
 	</head>
 	<body>
-	<div>style</div>
+	<div class="container">
+	<h4>style</h4>
 	<img alt="" src="/files/""" + url + """_style.jpg" width="512">
-	<div>content</div>
+	<hr>
+	<h4>content</h4>
 	<img alt="" src="/files/""" + url + """_content.jpg" width="512">
-	<div>result</div>
+	<hr>
+	<h4>result</h4>
 	<img alt="" src="/files/""" + url + """_out.png" width="512">
 	<hr>
-	<a href="#" onclick="history.go(-1)">Back</a>
+	<a class="button-primary" href="#" onclick="history.go(-1)">Back</a>
 	<script>
   (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
   (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
@@ -188,6 +200,7 @@ def image(url):
   ga('create', 'UA-36880204-4', 'auto');
   ga('send', 'pageview');
 	</script>
+	</div>
 	</body>
 	</html>"""
 
@@ -199,12 +212,15 @@ def timer():
 	threading.Timer(3.0, timer).start()
 	global processing
 	if processing == False:
-		a = col.find({"queued": True}).sort("uploaded", 1).limit(1).next()
-		if a:
-			global t
-			t = t_run(a['url'], a['cweight'], a['sweight'], a['tweight'], a['lrate'], a['ni'])
-			t.start()
-			col.update({"url": a['url']}, {"$set": {"queued": False, "pstarted": strftime("%Y-%m-%d %H:%M:%S", gmtime())}}, upsert=False)
+		try:
+			a = col.find({"queued": True}).sort("uploaded", 1).limit(1).next()
+			if a:
+				global t
+				t = t_run(a['url'], a['cweight'], a['sweight'], a['tweight'], a['lrate'], a['ni'])
+				t.start()
+				col.update({"url": a['url']}, {"$set": {"queued": False, "pstarted": strftime("%Y-%m-%d %H:%M:%S", gmtime())}}, upsert=False)
+		except:
+			a = 1
 
 threading.Timer(3.0, timer).start()
 
