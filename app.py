@@ -56,6 +56,14 @@ def index():
 		height: 30px !important;
 	}
 	</style>
+	<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-36880204-4', 'auto');
+  ga('send', 'pageview');
+	</script>
 </head>
 <body>
 	<div class="container">
@@ -84,14 +92,6 @@ def index():
 		<li><a href="https://github.com/hletrd/neural_style">This project on GitHub</a></li>
 	</ul>
 	<a href="/list">List of uploaded files</a>
-	<script>
-  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
-  ga('create', 'UA-36880204-4', 'auto');
-  ga('send', 'pageview');
-	</script>
 	</div>
 </body>
 </html>"""
