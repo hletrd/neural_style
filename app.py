@@ -47,6 +47,7 @@ def index():
 <html>
 <head>
 	<meta charset="utf-8">
+	<meta id="viewport" name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 	<title>Neural Style Online</title>
 	<link rel="stylesheet" href="/files/normalize.css">
 	<link rel="stylesheet" href="/files/skeleton.css">
@@ -174,6 +175,7 @@ def list(page=1):
 	<html>
 	<head>
 		<meta charset="utf-8">
+		<meta id="viewport" name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 		<title>List</title>
 		<link rel="stylesheet" href="/files/normalize.css">
 		<link rel="stylesheet" href="/files/skeleton.css">
@@ -194,6 +196,7 @@ def image(url):
 		result = """<!doctype HTML>
 		<head>
 			<meta charset="utf-8">
+			<meta id="viewport" name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 			<title>Image</title>
 			<link rel="stylesheet" href="/files/normalize.css">
 			<link rel="stylesheet" href="/files/skeleton.css">
@@ -224,7 +227,7 @@ def image(url):
 		</body>
 		</html>"""
 	else:
-		result = "error"
+		result = "<!doctype HTML><html><head><title>Error</title></head><body>404 not found</body></html>"
 	return result
 
 @app.route('/files/<path:path>')
