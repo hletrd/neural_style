@@ -142,7 +142,7 @@ def list(page=1):
 			col.update({"url": i['url']}, {"$set": {"status": True}}, upsert=False)
 	for i in col.find().sort("uploaded", -1).skip((page - 1) * 10).limit(10):
 		if i['status']:
-			result = result + '<div><a href="/image/' + i['url'] + '">' + i['url'] + '</a>: Processing completed, uploaded at ' + i['uploaded'] + ' GMT, <br /><img alt="" src="/files/' + i['url'] + '_out.png" width="250"></div>'
+			result = result + '<div><a href="/image/' + i['url'] + '">' + i['url'] + '</a>: Processing completed, uploaded at ' + i['uploaded'] + ' GMT<br /><img alt="" src="/files/' + i['url'] + '_out.png" width="250"></div>'
 		else:
 			if 'queued' in i and i['queued']:
 				result = result + '<div><a href="/image/' + i['url'] + '">' + i['url'] + '</a>: Queued now... uploaded at ' + i['uploaded'] + ' GMT</div>'
