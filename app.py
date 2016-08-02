@@ -148,7 +148,7 @@ def index():
 	<div class="col-md-8 col-md-offset-4">Choose a image with artistic style. Images from famous artists are recommended.<br />(Examples: The Starry Night, The Scream.)</div></div>
 	<div class="spacer"></div>
 	<div class="row"><div class="col-md-4">Select content image</div><div class="col-md-8"><input class="form-control" name="content" type="file"></div>
-	<div class="col-md-8 col-md-offset-4">Choose a image that you want to repaint with artistic style.</div></div>
+	<div class="col-md-8 col-md-offset-4">Choose a image that you want to repaint with artistic style.<br/><span style="color: red;">Caution: Your image will be publicly listed. DO NOT UPLOAD EXPLICIT PICS, OR PRIVATE PICS!</span></div></div>
 	<hr>
 	<strong>Set optional parameters</strong>
 	<div class="spacer"></div>
