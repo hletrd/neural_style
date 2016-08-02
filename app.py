@@ -191,6 +191,8 @@ def list(page=1):
 				result = result + '<div><a href="/image/' + i['url'] + '">' + i['url'] + '</a>: Processing now... uploaded at ' + i['uploaded'] + ' GMT, processing started at ' + i['pstarted'] + ' GMT</div>'
 	lastpage = math.ceil(1.0 * col.count() / 10)
 	pagelist = ''
+	if page > 6:
+		pagelist += '<li><a href="/list/1"><span>&laquo;</span></a></li>'
 	if page > 5:
 		pagelist += '<li><a href="/list/' + str(page - 5) + '">' + str(page - 5) + '</a></li>'
 	if page > 4:
@@ -212,6 +214,8 @@ def list(page=1):
 		pagelist += '<li><a href="/list/' + str(page + 4) + '">' + str(page + 4) + '</a></li>'
 	if lastpage >= page+5:
 		pagelist += '<li><a href="/list/' + str(page + 5) + '">' + str(page + 5) + '</a></li>'
+	if lastpage >= page+6:
+		pagelist += '<li><a href="/list/' + lastpage + '"><span>&raquo;</span></li>'
 	return """<!doctype HTML>
 <html>
 <head>
