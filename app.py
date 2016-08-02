@@ -13,6 +13,7 @@ import config
 dbclient = MongoClient('127.0.0.1', 27017)
 db = dbclient.db_neural
 col = db.images
+col.remove()
 
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = config.upload_folder
@@ -23,7 +24,7 @@ t = False
 col.update_many({"queued": False, "status": False}, {"$set": {"queued": True}})
 
 class t_run(threading.Thread):
-	def __init__(self, url, cweight, sweight, tweight, ni, isize):
+	def __init__(self, url, cweight, sweight, tweight, ni, isize, styletype, styletext):
 		threading.Thread.__init__(self)
 		global processing
 		processing = True
@@ -33,10 +34,15 @@ class t_run(threading.Thread):
 		self.tweight = str(tweight)
 		self.ni = str(ni)
 		self.isize = str(isize)
+		self.styletype = str(styletype)
+		self.styletext = str(styletext)
 
 	def run(self):
-		os.chdir('/home/hletrd/neural-style/')
-		self.p = subprocess.call(["th", "neural_style.lua", "-style_image", app.config['UPLOAD_FOLDER'] + self.url + "_style.jpg", "-content_image", app.config['UPLOAD_FOLDER'] + self.url + "_content.jpg", "-gpu", config.gpu, "-output_image", app.config['UPLOAD_FOLDER'] + self.url + "_out.png", "-image_size", self.isize, "-optimizer", "lbfgs", "-backend", config.backend, "-content_weight", self.cweight, "-style_weight", self.sweight, "-tv_weight", self.tweight, "-num_iterations", self.ni], "-save_iter", "0", "-print_iter", "0", "-cudnn_autotune")
+		os.chdir('/home/hletrd/neural/neural-style/')
+		if self.styletype == "1":
+			self.p = subprocess.call(["th", "neural_style.lua", "-style_image", app.config['UPLOAD_FOLDER'] + self.url + "_style.jpg", "-content_image", app.config['UPLOAD_FOLDER'] + self.url + "_content.jpg", "-gpu", config.gpu, "-output_image", app.config['UPLOAD_FOLDER'] + self.url + "_out.png", "-image_size", self.isize, "-optimizer", "lbfgs", "-backend", config.backend, "-content_weight", self.cweight, "-style_weight", self.sweight, "-tv_weight", self.tweight, "-num_iterations", self.ni, "-save_iter", "0", "-print_iter", "1", "-cudnn_autotune"])
+		elif self.styletype == "0":
+			self.p = subprocess.call(["th", "neural_style.lua", "-style_image", app.config['UPLOAD_FOLDER'] + self.styletext + "_style.jpg", "-content_image", app.config['UPLOAD_FOLDER'] + self.url + "_content.jpg", "-gpu", config.gpu, "-output_image", app.config['UPLOAD_FOLDER'] + self.url + "_out.png", "-image_size", self.isize, "-optimizer", "lbfgs", "-backend", config.backend, "-content_weight", self.cweight, "-style_weight", self.sweight, "-tv_weight", self.tweight, "-num_iterations", self.ni, "-save_iter", "0", "-print_iter", "1", "-cudnn_autotune"])
 		global processing
 		processing = False
 
@@ -50,6 +56,7 @@ def index():
 	<meta id="viewport" name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 	<title>Neural Style Online</title>
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
 	<script>
   (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
@@ -64,6 +71,17 @@ def index():
 	height: 10px;
 	}
 	</style>
+	<script>
+	function sets(d){
+		$("#style").val(d.dataset.id);
+		if (d.dataset.id == -1){
+			$("#style-file").css('display', 'block');
+		} else {
+			$("#style-file").css('display', 'none');
+		}
+		$("#select").html(d.innerHTML);
+	}
+	</script>
 </head>
 <body>
 	<nav class="navbar navbar-default">
@@ -95,7 +113,29 @@ def index():
 	<hr>
 	<strong>Select images</strong>
 	<div class="spacer"></div>
-	<div class="row"><div class="col-md-4">Select style image</div><div class="col-md-8"><input class="form-control" name="style" type="file"></div>
+	<div class="row"><div class="col-md-4">Select style image</div><div class="col-md-8"><div class="btn-group">
+		<button type="button" class="btn btn-default" id="select">Select style</button>
+		<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+		<span class="caret"></span>
+		<span class="sr-only">Toggle Dropdown</span>
+		</button>
+		<ul class="dropdown-menu">
+		<li><a href="#" onclick="sets(this)" data-id="0">The Starry Night</a></li>
+		<li><a href="#" onclick="sets(this)" data-id="1">Shipwreck</a></li>
+		<li><a href="#" onclick="sets(this)" data-id="2">The Scream</a></li>
+		<li><a href="#" onclick="sets(this)" data-id="3">Seated Nude</a></li>
+		<li><a href="#" onclick="sets(this)" data-id="4">Ink wash</a></li>
+		<li><a href="#" onclick="sets(this)" data-id="5">Hand with Reflecting Sphere</a></li>
+		<li><a href="#" onclick="sets(this)" data-id="6">Woman with a Hat</a></li>
+		<li><a href="#" onclick="sets(this)" data-id="7">Picasso self 1907</a></li>
+
+		<li role="separator" class="divider"></li>
+		<li><a href="#" onclick="sets(this)" data-id="-1">Use custom pic</a></li>
+		</ul>
+	</div>
+	<div class="spacer"></div>
+	<input type="hidden" name="style_select" id="style" value="999">
+	<input class="form-control" name="style" type="file" style="display: none;" id="style-file"></div>
 	<div class="col-md-8 col-md-offset-4">Choose a image with artistic style. Images from famous artists are recommended.<br />(Examples: The Starry Night, The Scream.)</div></div>
 	<div class="spacer"></div>
 	<div class="row"><div class="col-md-4">Select content image</div><div class="col-md-8"><input class="form-control" name="content" type="file"></div>
@@ -134,7 +174,43 @@ def index():
 
 @app.route('/submit', methods=['POST'])
 def submit():
-	style = request.files['style']
+	style_selected = int(request.form['style_select'])
+	url = ''.join(random.choice(string.ascii_lowercase + string.digits) for _ in range(10))
+	style = False
+	if style_selected == 0:
+		styletype = 0
+		styletext = "starry_night"
+	elif style_selected == 1:
+		styletype = 0
+		styletext = "shipwreck"
+	elif style_selected == 2:
+		styletype = 0
+		styletext = "the_scream"
+	elif style_selected == 3:
+		styletype = 0
+		styletext = "seated_nude"
+	elif style_selected == 4:
+		styletype = 0
+		styletext = "ink_wash"
+	elif style_selected == 5:
+		styletype = 0
+		styletext = "escher_sphere"
+	elif style_selected == 6:
+		styletype = 0
+		styletext = "woman_with_a_hat"
+	elif style_selected == 7:
+		styletype = 0
+		styletext = "picasso_selfport1907"
+	elif style_selected == -1 or not style:
+		styletype = 1
+		styletext = ''
+		style = request.files['style']
+		style.save(os.path.join(app.config['UPLOAD_FOLDER'], url + '_style.jpg'))
+		if imghdr.what(os.path.join(app.config['UPLOAD_FOLDER'], url + '_style.jpg')) != 'jpeg':
+			return '<!doctype HTML><html><head><title>Error</title></head><body>error: not a valid JPEG file.</body></html>'
+	else:
+		return '<!doctype HTML><html><head><title>Error</title></head><body>error: invalid style.</body></html>'
+
 	content = request.files['content']
 	cweight = float(request.form['cweight'])
 	sweight = float(request.form['sweight'])
@@ -150,12 +226,10 @@ def submit():
 		ni = 1000
 	elif ni < 1:
 		ni = 1
-	if style and content:
-		url = ''.join(random.choice(string.ascii_lowercase + string.digits) for _ in range(8))
-		style.save(os.path.join(app.config['UPLOAD_FOLDER'], url + '_style.jpg'))
+	if content:
 		content.save(os.path.join(app.config['UPLOAD_FOLDER'], url + '_content.jpg'))
-		if imghdr.what(os.path.join(app.config['UPLOAD_FOLDER'], url + '_style.jpg')) == 'jpeg' and imghdr.what(os.path.join(app.config['UPLOAD_FOLDER'], url + '_content.jpg')) == 'jpeg':
-			col.insert_one({"url": url, "status": False, "uploaded": strftime("%Y-%m-%d %H:%M:%S", gmtime()), "queued": True, "cweight": cweight, "sweight": sweight, "tweight": tweight, "ni": ni, "isize": isize})
+		if imghdr.what(os.path.join(app.config['UPLOAD_FOLDER'], url + '_content.jpg')) == 'jpeg':
+			col.insert_one({"url": url, "status": False, "uploaded": strftime("%Y-%m-%d %H:%M:%S", gmtime()), "queued": True, "cweight": cweight, "sweight": sweight, "tweight": tweight, "ni": ni, "isize": isize, "styletype": styletype, "styletext": styletext})
 			return redirect('/list')
 		else:
 			return '<!doctype HTML><html><head><title>Error</title></head><body>error: not a valid JPEG file.</body></html>'
@@ -183,12 +257,12 @@ def list(page=1):
 			col.update({"url": i['url']}, {"$set": {"status": True}}, upsert=False)
 	for i in col.find().sort("uploaded", -1).skip((page - 1) * 10).limit(10):
 		if i['status']:
-			result = result + '<div><a href="/image/' + i['url'] + '">' + i['url'] + '</a>: Processing completed, uploaded at ' + i['uploaded'] + ' GMT<br /><img alt="" src="/files/' + i['url'] + '_out.png" width="250"></div>'
+			result = result + '<div class="list-group"><a class="list-group-item" href="/image/' + i['url'] + '"><h4 class="list-group-item-heading">' + i['url'] + '</h4><p class="list-group-item-text">Processing completed, uploaded at ' + i['uploaded'] + ' GMT</p><div class="thumbnail"><img alt="" src="/files/' + i['url'] + '_out.png" width="250"></div></div>'
 		else:
 			if 'queued' in i and i['queued']:
-				result = result + '<div><a href="/image/' + i['url'] + '">' + i['url'] + '</a>: Queued now... uploaded at ' + i['uploaded'] + ' GMT</div>'
+				result = result + '<div class="list-group"><a class="list-group-item" href="/image/' + i['url'] + '"><h4 class="list-group-item-heading">' + i['url'] + '</h4><p class="list-group-item-text">Queued now... uploaded at ' + i['uploaded'] + ' GMT</p></div>'
 			else:
-				result = result + '<div><a href="/image/' + i['url'] + '">' + i['url'] + '</a>: Processing now... uploaded at ' + i['uploaded'] + ' GMT, processing started at ' + i['pstarted'] + ' GMT</div>'
+				result = result + '<div class="list-group"><a class="list-group-item" href="/image/' + i['url'] + '"><h4 class="list-group-item-heading">' + i['url'] + '</h4><p class="list-group-item-text">Processing now... uploaded at ' + i['uploaded'] + ' GMT, processing started at ' + i['pstarted'] + ' GMT</p></div>'
 	lastpage = math.ceil(1.0 * col.count() / 10)
 	pagelist = ''
 	if page > 6:
@@ -223,6 +297,7 @@ def list(page=1):
 	<meta id="viewport" name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 	<title>Neural Style Online</title>
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
 	<script>
   (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
@@ -281,6 +356,7 @@ def image(url):
 	<meta id="viewport" name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 	<title>Neural Style Online</title>
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
 	<script>
   (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
@@ -360,7 +436,7 @@ def timer():
 			a = col.find({"queued": True}).sort("uploaded", 1).limit(1).next()
 			if a:
 				global t
-				t = t_run(a['url'], a['cweight'], a['sweight'], a['tweight'], a['ni'], a['isize'])
+				t = t_run(a['url'], a['cweight'], a['sweight'], a['tweight'], a['ni'], a['isize'], a['styletype'], a['styletext'])
 				t.start()
 				col.update({"url": a['url']}, {"$set": {"queued": False, "pstarted": strftime("%Y-%m-%d %H:%M:%S", gmtime())}}, upsert=False)
 		except:
