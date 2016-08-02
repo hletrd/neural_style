@@ -36,7 +36,7 @@ class t_run(threading.Thread):
 
 	def run(self):
 		os.chdir('/home/hletrd/neural-style/')
-		self.p = subprocess.call(["th", "neural_style.lua", "-style_image", app.config['UPLOAD_FOLDER'] + self.url + "_style.jpg", "-content_image", app.config['UPLOAD_FOLDER'] + self.url + "_content.jpg", "-gpu", config.gpu, "-output_image", app.config['UPLOAD_FOLDER'] + self.url + "_out.png", "-image_size", self.isize, "-optimizer", "lbfgs", "-backend", config.backend, "-content_weight", self.cweight, "-style_weight", self.sweight, "-tv_weight", self.tweight, "-num_iterations", self.ni])
+		self.p = subprocess.call(["th", "neural_style.lua", "-style_image", app.config['UPLOAD_FOLDER'] + self.url + "_style.jpg", "-content_image", app.config['UPLOAD_FOLDER'] + self.url + "_content.jpg", "-gpu", config.gpu, "-output_image", app.config['UPLOAD_FOLDER'] + self.url + "_out.png", "-image_size", self.isize, "-optimizer", "lbfgs", "-backend", config.backend, "-content_weight", self.cweight, "-style_weight", self.sweight, "-tv_weight", self.tweight, "-num_iterations", self.ni], "-save_iter", "0", "-print_iter", "0", "-cudnn_autotune")
 		global processing
 		processing = False
 
