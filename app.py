@@ -166,6 +166,7 @@ def index():
 		<li>Please do not upload explicit photos.</li>
 		<li>If your result is hard to recognize, try increasing number of iterations.</li>
 		<li><a href="https://github.com/hletrd/neural_style">This project on GitHub</a></li>
+		<li>System: Intel Celeron G3900, 32GB DDR4 RAM, NVIDIA GTX 1070</li>
 	</ul>
 	</div>
 </body>
