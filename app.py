@@ -403,13 +403,13 @@ def image(url):
 	</nav>
 	<div class="container">
 		<h4>style</h4>
-		<img alt="" src="/files/""" + aaaaaa + """_style.jpg" class="col-md-6">
+		<div class="row"><img alt="" src="/files/""" + aaaaaa + """_style.jpg" class="col-md-6"></div>
 		<hr>
 		<h4>content</h4>
-		<img alt="" src="/files/""" + url + """_content.jpg" class="col-md-6">
+		<div class="row"><img alt="" src="/files/""" + url + """_content.jpg" class="col-md-6"></div>
 		<hr>
 		<h4>result</h4>
-		<img alt="" src="/files/""" + url + """_out.png" class="col-md-6">
+		<div class="row"><img alt="" src="/files/""" + url + """_out.png" class="col-md-6"></div>
 		<hr>"""
 		if 'ni' in an_image:
 			result += "<h5>Number of iterations: " + str(an_image['ni']) + "</h5><h5>Content weight: " + str(an_image['cweight']) + "</h5><h5>Style weight: " + str(an_image['sweight']) + "</h5><h5>Tv weight: " + str(an_image['tweight']) + "</h5><hr>"
