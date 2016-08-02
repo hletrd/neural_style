@@ -106,6 +106,15 @@ def index():
 		</div>
 	</nav>
 	<div class="container">
+	<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+	<ins class="adsbygoogle"
+	style="display:block"
+	data-ad-client="ca-pub-8739077797209742"
+	data-ad-slot="7519885162"
+	data-ad-format="auto"></ins>
+	<script>
+	(adsbygoogle = window.adsbygoogle || []).push({});
+	</script>
 	<form method="POST" action="/submit" enctype="multipart/form-data" class="form-horizontal">
 	<p>This service is based on <a href="https://github.com/jcjohnson/neural-style/">Torch implementation of neural style algorithm</a> by jcjohnson.</p>
 	<p>Only jpg files are allowed. Maximum allowed size is 8MB totally.</p>
@@ -337,7 +346,17 @@ def list(page=1):
 			</div>
 		</div>
 	</nav>
-	<div class="container">""" + result + '<hr><div class="text-center"><nav><ul class="pagination">' + pagelist + '</ul></nav>' + """<script>
+	<div class="container">
+	<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+	<ins class="adsbygoogle"
+	style="display:block"
+	data-ad-client="ca-pub-8739077797209742"
+	data-ad-slot="7519885162"
+	data-ad-format="auto"></ins>
+	<script>
+	(adsbygoogle = window.adsbygoogle || []).push({});
+	</script>
+	""" + result + '<hr><div class="text-center"><nav><ul class="pagination">' + pagelist + '</ul></nav>' + """<script>
   (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
   (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
   m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
@@ -402,14 +421,23 @@ def image(url):
 		</div>
 	</nav>
 	<div class="container">
+	<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+	<ins class="adsbygoogle"
+	style="display:block"
+	data-ad-client="ca-pub-8739077797209742"
+	data-ad-slot="7519885162"
+	data-ad-format="auto"></ins>
+	<script>
+	(adsbygoogle = window.adsbygoogle || []).push({});
+	</script>
 		<h4>style</h4>
-		<div class="row"><img alt="" src="/files/""" + aaaaaa + """_style.jpg" class="col-md-6"></div>
+		<div class="row"><img alt="" src="/files/""" + aaaaaa + """_style.jpg" class="col-md-6 col-sm-12 col-xs-12"></div>
 		<hr>
 		<h4>content</h4>
-		<div class="row"><img alt="" src="/files/""" + url + """_content.jpg" class="col-md-6"></div>
+		<div class="row"><img alt="" src="/files/""" + url + """_content.jpg" class="col-md-6 col-sm-12 col-xs-12"></div>
 		<hr>
 		<h4>result</h4>
-		<div class="row"><img alt="" src="/files/""" + url + """_out.png" class="col-md-6"></div>
+		<div class="row"><img alt="" src="/files/""" + url + """_out.png" class="col-md-6 col-sm-12 col-xs-12"></div>
 		<hr>"""
 		if 'ni' in an_image:
 			result += "<h5>Number of iterations: " + str(an_image['ni']) + "</h5><h5>Content weight: " + str(an_image['cweight']) + "</h5><h5>Style weight: " + str(an_image['sweight']) + "</h5><h5>Tv weight: " + str(an_image['tweight']) + "</h5><hr>"
