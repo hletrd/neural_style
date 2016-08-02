@@ -39,9 +39,9 @@ class t_run(threading.Thread):
 	def run(self):
 		os.chdir('/home/hletrd/neural/neural-style/')
 		if self.styletype == "1":
-			self.p = subprocess.call(["th", "neural_style.lua", "-style_image", app.config['UPLOAD_FOLDER'] + self.url + "_style.jpg", "-content_image", app.config['UPLOAD_FOLDER'] + self.url + "_content.jpg", "-gpu", config.gpu, "-output_image", app.config['UPLOAD_FOLDER'] + self.url + "_out.png", "-image_size", self.isize, "-optimizer", "lbfgs", "-backend", config.backend, "-content_weight", self.cweight, "-style_weight", self.sweight, "-tv_weight", self.tweight, "-num_iterations", self.ni, "-save_iter", "0", "-print_iter", "0", "-cudnn_autotune"])
+			self.p = subprocess.call(["th", "neural_style.lua", "-style_image", app.config['UPLOAD_FOLDER'] + self.url + "_style.jpg", "-content_image", app.config['UPLOAD_FOLDER'] + self.url + "_content.jpg", "-gpu", config.gpu, "-output_image", app.config['UPLOAD_FOLDER'] + self.url + "_out.png", "-image_size", self.isize, "-optimizer", "lbfgs", "-backend", config.backend, "-content_weight", self.cweight, "-style_weight", self.sweight, "-tv_weight", self.tweight, "-num_iterations", self.ni, "-save_iter", "0", "-cudnn_autotune"])
 		elif self.styletype == "0":
-			self.p = subprocess.call(["th", "neural_style.lua", "-style_image", app.config['UPLOAD_FOLDER'] + self.styletext + "_style.jpg", "-content_image", app.config['UPLOAD_FOLDER'] + self.url + "_content.jpg", "-gpu", config.gpu, "-output_image", app.config['UPLOAD_FOLDER'] + self.url + "_out.png", "-image_size", self.isize, "-optimizer", "lbfgs", "-backend", config.backend, "-content_weight", self.cweight, "-style_weight", self.sweight, "-tv_weight", self.tweight, "-num_iterations", self.ni, "-save_iter", "0", "-print_iter", "0", "-cudnn_autotune"])
+			self.p = subprocess.call(["th", "neural_style.lua", "-style_image", app.config['UPLOAD_FOLDER'] + self.styletext + "_style.jpg", "-content_image", app.config['UPLOAD_FOLDER'] + self.url + "_content.jpg", "-gpu", config.gpu, "-output_image", app.config['UPLOAD_FOLDER'] + self.url + "_out.png", "-image_size", self.isize, "-optimizer", "lbfgs", "-backend", config.backend, "-content_weight", self.cweight, "-style_weight", self.sweight, "-tv_weight", self.tweight, "-num_iterations", self.ni, "-save_iter", "0", "-cudnn_autotune"])
 		global processing
 		processing = False
 
@@ -109,6 +109,7 @@ def index():
 	<form method="POST" action="/submit" enctype="multipart/form-data" class="form-horizontal">
 	<p>This service is based on <a href="https://github.com/jcjohnson/neural-style/">Torch implementation of neural style algorithm</a> by jcjohnson.</p>
 	<p>Only jpg files are allowed. Maximum allowed size is 8MB totally.</p>
+	<p><strong>Now on service with NVIDIA GeForce GTX 1070! (Celeron G3900 + 32GB DDR4 + GTX 1070)</strong></p>
 	<hr>
 	<strong>Select images</strong>
 	<div class="spacer"></div>
