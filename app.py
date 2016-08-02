@@ -179,6 +179,11 @@ def index():
 		<li>System: Intel Celeron G3900, 32GB DDR4 RAM, NVIDIA GTX 1070</li>
 	</ul>
 	</div>
+<script>
+if (!document.getElementById("aswift_0_expand")) {
+	alert("Turning off AdBlock (or similar plugins) may help me maintaining the service.");
+}
+</script>
 </body>
 </html>"""
 
@@ -363,7 +368,12 @@ def list(page=1):
   })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
   ga('create', 'UA-36880204-4', 'auto');
   ga('send', 'pageview');
-	</script>""" + '</div></body></html>'
+	</script>""" + '''</div>
+<script>
+if (!document.getElementById("aswift_0_expand")) {
+	alert("Turning off AdBlock (or similar plugins) may help me maintaining the service.");
+}
+</script></body></html>'''
 
 @app.route('/image/<url>')
 def image(url):
@@ -451,6 +461,11 @@ def image(url):
 	  ga('send', 'pageview');
 		</script>
 		</div>
+		<script>
+		if (!document.getElementById("aswift_0_expand")) {
+			alert("Turning off AdBlock (or similar plugins) may help me maintaining the service.");
+		}
+		</script>
 		</body>
 		</html>"""
 	else:
