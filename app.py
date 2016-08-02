@@ -304,7 +304,7 @@ def image(url):
 				<span class="sr-only">Toggle navigation</span>
 				<span class="icon-bar"></span>
 				<span class="icon-bar"></span>
-				<span class="icon-bar">Image: """ + url + """</span>
+				<span class="icon-bar"></span>
 				</button>
 				<a class="navbar-brand" href="/">Neural artistic styling</a>
 			</div>
@@ -312,7 +312,7 @@ def image(url):
 				<ul class="nav navbar-nav">
 				<li><a href="/">Upload new image</a></li>
 				<li><a href="/list">List of uploaded images</a></li>
-				<li class="active"><a href="#"></a></li>
+				<li class="active"><a href="#">Image: """ + url + """</a></li>
 				</ul>
 				<ul class="nav navbar-nav navbar-right">
 				<li><a href="https://0101010101.com">Created by HLETRD</a></li>
