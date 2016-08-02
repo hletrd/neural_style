@@ -181,9 +181,11 @@ def index():
 	</div>
 <script>
 $(document).ready(function(){
-	if (!document.getElementById("aswift_0_expand")) {
-		alert("Turning off AdBlock (or similar plugins) may help me maintaining the service.");
-	}
+	setTimeout(function(){
+		if (!document.getElementById("aswift_0_expand")) {
+			alert("Turning off AdBlock (or similar plugins) may help me maintaining the service.");
+		}
+	}, 2000);
 });
 </script>
 </body>
@@ -373,9 +375,11 @@ def list(page=1):
 	</script>""" + '''</div>
 <script>
 $(document).ready(function(){
-	if (!document.getElementById("aswift_0_expand")) {
-		alert("Turning off AdBlock (or similar plugins) may help me maintaining the service.");
-	}
+	setTimeout(function(){
+		if (!document.getElementById("aswift_0_expand")) {
+			alert("Turning off AdBlock (or similar plugins) may help me maintaining the service.");
+		}
+	}, 2000);
 });
 </script></body></html>'''
 
@@ -467,9 +471,11 @@ def image(url):
 		</div>
 		<script>
 		$(document).ready(function(){
-			if (!document.getElementById("aswift_0_expand")) {
-				alert("Turning off AdBlock (or similar plugins) may help me maintaining the service.");
-			}
+			setTimeout(function(){
+				if (!document.getElementById("aswift_0_expand")) {
+					alert("Turning off AdBlock (or similar plugins) may help me maintaining the service.");
+				}
+			}, 2000);
 		});
 		</script>
 		</body>
