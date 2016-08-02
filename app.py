@@ -349,7 +349,7 @@ def staticfile(path):
 	return send_from_directory(app.config['UPLOAD_FOLDER'], path, as_attachment=False)
 
 def timer():
-	#threading.Timer(3.0, timer).start()
+	threading.Timer(3.0, timer).start()
 	global processing
 	if processing == False:
 		try:
@@ -362,7 +362,7 @@ def timer():
 		except:
 			a = 1
 
-#threading.Timer(3.0, timer).start()
+threading.Timer(3.0, timer).start()
 
 if __name__ == '__main__':
-	app.run(debug=True, host="0.0.0.0", port=9002, use_reloader=True)
+	app.run(debug=True, host="0.0.0.0", port=9002, use_reloader=False)
