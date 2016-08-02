@@ -13,7 +13,6 @@ import config
 dbclient = MongoClient('127.0.0.1', 27017)
 db = dbclient.db_neural
 col = db.images
-col.remove()
 
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = config.upload_folder
