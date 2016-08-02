@@ -180,9 +180,11 @@ def index():
 	</ul>
 	</div>
 <script>
-if (!document.getElementById("aswift_0_expand")) {
-	alert("Turning off AdBlock (or similar plugins) may help me maintaining the service.");
-}
+$(document).ready(function(){
+	if (!document.getElementById("aswift_0_expand")) {
+		alert("Turning off AdBlock (or similar plugins) may help me maintaining the service.");
+	}
+});
 </script>
 </body>
 </html>"""
@@ -370,9 +372,11 @@ def list(page=1):
   ga('send', 'pageview');
 	</script>""" + '''</div>
 <script>
-if (!document.getElementById("aswift_0_expand")) {
-	alert("Turning off AdBlock (or similar plugins) may help me maintaining the service.");
-}
+$(document).ready(function(){
+	if (!document.getElementById("aswift_0_expand")) {
+		alert("Turning off AdBlock (or similar plugins) may help me maintaining the service.");
+	}
+});
 </script></body></html>'''
 
 @app.route('/image/<url>')
@@ -462,9 +466,11 @@ def image(url):
 		</script>
 		</div>
 		<script>
-		if (!document.getElementById("aswift_0_expand")) {
-			alert("Turning off AdBlock (or similar plugins) may help me maintaining the service.");
-		}
+		$(document).ready(function(){
+			if (!document.getElementById("aswift_0_expand")) {
+				alert("Turning off AdBlock (or similar plugins) may help me maintaining the service.");
+			}
+		});
 		</script>
 		</body>
 		</html>"""
