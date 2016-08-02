@@ -215,7 +215,7 @@ def list(page=1):
 	if lastpage >= page+5:
 		pagelist += '<li><a href="/list/' + str(page + 5) + '">' + str(page + 5) + '</a></li>'
 	if lastpage >= page+6:
-		pagelist += '<li><a href="/list/' + lastpage + '"><span>&raquo;</span></li>'
+		pagelist += '<li><a href="/list/' + str(int(lastpage)) + '"><span>&raquo;</span></li>'
 	return """<!doctype HTML>
 <html>
 <head>
