@@ -282,12 +282,12 @@ def list(page=1):
 			col.update({"url": i['url']}, {"$set": {"status": True}}, upsert=False)
 	for i in col.find().sort("uploaded", -1).skip((page - 1) * 10).limit(10):
 		if i['status']:
-			result = result + '<div class="list-group"><a class="list-group-item" href="/image/' + i['url'] + '"><h4 class="list-group-item-heading">' + i['url'] + '</h4><p class="list-group-item-text">Processing completed, uploaded at ' + i['uploaded'] + ' GMT</p><div class="thumbnail"><img alt="" src="/files/' + i['url'] + '_out.png" width="250"></div></div>'
+			result = result + '<div class="col-md-4 col-sm-6"><div class="list-group"><a class="list-group-item" href="/image/' + i['url'] + '"><h4 class="list-group-item-heading">' + i['url'] + '</h4><p class="list-group-item-text">Processing completed, uploaded at ' + i['uploaded'] + ' GMT</p><div class="thumbnail"><img alt="" src="/files/' + i['url'] + '_out.png" width="250"></div></div></div>'
 		else:
 			if 'queued' in i and i['queued']:
-				result = result + '<div class="list-group"><a class="list-group-item" href="/image/' + i['url'] + '"><h4 class="list-group-item-heading">' + i['url'] + '</h4><p class="list-group-item-text">Queued now... uploaded at ' + i['uploaded'] + ' GMT</p></div>'
+				result = result + '<div class="col-md-4 col-sm-6"><div class="list-group"><a class="list-group-item" href="/image/' + i['url'] + '"><h4 class="list-group-item-heading">' + i['url'] + '</h4><p class="list-group-item-text">Queued now... uploaded at ' + i['uploaded'] + ' GMT</p></div></div>'
 			else:
-				result = result + '<div class="list-group"><a class="list-group-item" href="/image/' + i['url'] + '"><h4 class="list-group-item-heading">' + i['url'] + '</h4><p class="list-group-item-text">Processing now... uploaded at ' + i['uploaded'] + ' GMT, processing started at ' + i['pstarted'] + ' GMT</p></div>'
+				result = result + '<div class="col-md-4 col-sm-6"><div class="list-group"><a class="list-group-item" href="/image/' + i['url'] + '"><h4 class="list-group-item-heading">' + i['url'] + '</h4><p class="list-group-item-text">Processing now... uploaded at ' + i['uploaded'] + ' GMT, processing started at ' + i['pstarted'] + ' GMT</p></div></div>'
 	lastpage = math.ceil(1.0 * col.count() / 10)
 	pagelist = ''
 	if page > 6:
@@ -376,8 +376,8 @@ def list(page=1):
 	<input type="hidden" name="hosted_button_id" value="724URAGPQS2P4">
 	<input type="image" src="https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif" border="0" name="submit" alt="PayPal - The safer, easier way to pay online!">
 	<img alt="" border="0" src="https://www.paypalobjects.com/en_US/i/scr/pixel.gif" width="1" height="1">
-	</form></p>
-	""" + result + '<hr><div class="text-center"><nav><ul class="pagination">' + pagelist + '</ul></nav>' + """<script>
+	</form></p><div class="row">
+	""" + result + '</div><hr><div class="text-center"><nav><ul class="pagination">' + pagelist + '</ul></nav>' + """<script>
   (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
   (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
   m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
