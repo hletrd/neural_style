@@ -280,15 +280,15 @@ def list(page=1):
 	for i in unprocessed_list:
 		if os.path.isfile(app.config['UPLOAD_FOLDER'] + i['url'] + '_out.png'):
 			col.update({"url": i['url']}, {"$set": {"status": True}}, upsert=False)
-	for i in col.find().sort("uploaded", -1).skip((page - 1) * 10).limit(10):
+	for i in col.find().sort("uploaded", -1).skip((page - 1) * 12).limit(12):
 		if i['status']:
-			result = result + '<div class="col-md-4 col-sm-6"><div class="list-group"><a class="list-group-item" href="/image/' + i['url'] + '"><h4 class="list-group-item-heading">' + i['url'] + '</h4><p class="list-group-item-text">Processing completed, uploaded at ' + i['uploaded'] + ' GMT</p><div class="thumbnail"><div style="background-image: url(\'/files/' + i['url'] + '_out.png\'); background-size: cover; background-repeat: no-repeat; height: 250px; width: 250px; display: inline-block;"></div></div></div></div>'
+			result = result + '<div class="col-md-4 col-sm-6"><div class="list-group"><a class="list-group-item" href="/image/' + i['url'] + '"><h4 class="list-group-item-heading">' + i['url'] + '</h4><p class="list-group-item-text">Processing completed, uploaded at ' + i['uploaded'] + ' GMT</p><div class="thumbnail"><div style="background-image: url(\'/files/' + i['url'] + '_out.png\'); background-size: cover; background-repeat: no-repeat; height: 250px; width: 100%; display: inline-block;"></div></div></div></div>'
 		else:
 			if 'queued' in i and i['queued']:
 				result = result + '<div class="col-md-4 col-sm-6"><div class="list-group"><a class="list-group-item" href="/image/' + i['url'] + '"><h4 class="list-group-item-heading">' + i['url'] + '</h4><p class="list-group-item-text">Queued now... uploaded at ' + i['uploaded'] + ' GMT</p></div></div>'
 			else:
 				result = result + '<div class="col-md-4 col-sm-6"><div class="list-group"><a class="list-group-item" href="/image/' + i['url'] + '"><h4 class="list-group-item-heading">' + i['url'] + '</h4><p class="list-group-item-text">Processing now... uploaded at ' + i['uploaded'] + ' GMT, processing started at ' + i['pstarted'] + ' GMT</p></div></div>'
-	lastpage = math.ceil(1.0 * col.count() / 10)
+	lastpage = math.ceil(1.0 * col.count() / 12)
 	pagelist = ''
 	if page > 6:
 		pagelist += '<li><a href="/list/1"><span>&laquo;</span></a></li>'
