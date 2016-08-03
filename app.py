@@ -115,10 +115,16 @@ def index():
 	<script>
 	(adsbygoogle = window.adsbygoogle || []).push({});
 	</script>
-	<form method="POST" action="/submit" enctype="multipart/form-data" class="form-horizontal">
 	<p>This service is based on <a href="https://github.com/jcjohnson/neural-style/">Torch implementation of neural style algorithm</a> by jcjohnson.</p>
 	<p>Only jpg files are allowed. Maximum allowed size is 8MB totally.</p>
+	<p><strong>Donation: <img alt="" src="/files/bitcoin.png"> BTC 1Lqmo3Xg1LEGxToxNRrt1a1o2pqWgMKv5G</strong>&emsp;<form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top">
+	<input type="hidden" name="cmd" value="_s-xclick">
+	<input type="hidden" name="hosted_button_id" value="724URAGPQS2P4">
+	<input type="image" src="https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif" border="0" name="submit" alt="PayPal - The safer, easier way to pay online!">
+	<img alt="" border="0" src="https://www.paypalobjects.com/en_US/i/scr/pixel.gif" width="1" height="1">
+	</form></p>
 	<p><strong>Now on service with NVIDIA GeForce GTX 1070! (Celeron G3900 + 32GB DDR4 + GTX 1070)</strong></p>
+	<form method="POST" action="/submit" enctype="multipart/form-data" class="form-horizontal">
 	<hr>
 	<strong>Select images</strong>
 	<div class="spacer"></div>
@@ -365,6 +371,12 @@ def list(page=1):
 	<script>
 	(adsbygoogle = window.adsbygoogle || []).push({});
 	</script>
+	<p><strong>Donation: <img alt="" src="/files/bitcoin.png"> BTC 1Lqmo3Xg1LEGxToxNRrt1a1o2pqWgMKv5G</strong>&emsp;<form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top">
+	<input type="hidden" name="cmd" value="_s-xclick">
+	<input type="hidden" name="hosted_button_id" value="724URAGPQS2P4">
+	<input type="image" src="https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif" border="0" name="submit" alt="PayPal - The safer, easier way to pay online!">
+	<img alt="" border="0" src="https://www.paypalobjects.com/en_US/i/scr/pixel.gif" width="1" height="1">
+	</form></p>
 	""" + result + '<hr><div class="text-center"><nav><ul class="pagination">' + pagelist + '</ul></nav>' + """<script>
   (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
   (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
@@ -448,6 +460,12 @@ def image(url):
 	<script>
 	(adsbygoogle = window.adsbygoogle || []).push({});
 	</script>
+		<p><strong>Donation: <img alt="" src="/files/bitcoin.png"> BTC 1Lqmo3Xg1LEGxToxNRrt1a1o2pqWgMKv5G</strong>&emsp;<form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top">
+		<input type="hidden" name="cmd" value="_s-xclick">
+		<input type="hidden" name="hosted_button_id" value="724URAGPQS2P4">
+		<input type="image" src="https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif" border="0" name="submit" alt="PayPal - The safer, easier way to pay online!">
+		<img alt="" border="0" src="https://www.paypalobjects.com/en_US/i/scr/pixel.gif" width="1" height="1">
+		</form></p>
 		<h4>style</h4>
 		<div class="row"><img alt="" src="/files/""" + aaaaaa + """_style.jpg" class="col-md-6 col-sm-12 col-xs-12"></div>
 		<hr>
