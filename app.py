@@ -282,7 +282,7 @@ def list(page=1):
 			col.update({"url": i['url']}, {"$set": {"status": True}}, upsert=False)
 	for i in col.find().sort("uploaded", -1).skip((page - 1) * 10).limit(10):
 		if i['status']:
-			result = result + '<div class="col-md-4 col-sm-6"><div class="list-group"><a class="list-group-item" href="/image/' + i['url'] + '"><h4 class="list-group-item-heading">' + i['url'] + '</h4><p class="list-group-item-text">Processing completed, uploaded at ' + i['uploaded'] + ' GMT</p><div class="thumbnail"><img alt="" src="/files/' + i['url'] + '_out.png" width="250"></div></div></div>'
+			result = result + '<div class="col-md-4 col-sm-6"><div class="list-group"><a class="list-group-item" href="/image/' + i['url'] + '"><h4 class="list-group-item-heading">' + i['url'] + '</h4><p class="list-group-item-text">Processing completed, uploaded at ' + i['uploaded'] + ' GMT</p><div class="thumbnail"><div style="background-image: url(\'/files/' + i['url'] + '_out.png\'); background-size: cover; background-repeat: no-repeat; height: 250px; width: 250px; display: inline-block;"></div></div></div></div>'
 		else:
 			if 'queued' in i and i['queued']:
 				result = result + '<div class="col-md-4 col-sm-6"><div class="list-group"><a class="list-group-item" href="/image/' + i['url'] + '"><h4 class="list-group-item-heading">' + i['url'] + '</h4><p class="list-group-item-text">Queued now... uploaded at ' + i['uploaded'] + ' GMT</p></div></div>'
